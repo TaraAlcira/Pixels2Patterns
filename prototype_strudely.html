@@ -1,0 +1,1045 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>From Pixels to Patterns</title>
+    <script src="https://unpkg.com/@strudel/embed@latest"></script>
+    <style>
+        :root {
+            --bg: #f8fafc;
+            --ink: #0b0b0c;
+            --muted: #6b7280;
+            --card: #ffffff;
+            --line: #e5e7eb;
+            --pink: #ec4899;
+            --pink-600: #db2777;
+            --pink-100: #fdf2f8;
+            --pink-200: #fbcfe8;
+            --ring: rgba(236, 72, 153, .25);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            height: 100%;
+        }
+
+        body {
+            margin: 0;
+            font: 16px/1.5 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+                Roboto, Helvetica, Arial, sans-serif;
+            background: radial-gradient(circle at top left, #ffe4f4 0, #f8fafc 40%, #eef2ff 100%);
+            color: var(--ink);
+        }
+
+        .wrap {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 24px 16px 40px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 1.6rem;
+            font-weight: 800;
+            letter-spacing: 0.02em;
+        }
+
+        .subtitle {
+            margin-top: 6px;
+            font-size: 0.95rem;
+            color: var(--muted);
+        }
+
+        .grid {
+            display: grid;
+            gap: 18px;
+            grid-template-columns: 1fr;
+        }
+
+        @media (min-width: 980px) {
+            .grid {
+                grid-template-columns: minmax(0, 1.35fr) minmax(420px, 0.65fr);
+                align-items: stretch;
+            }
+        }
+
+        .panel {
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            padding: 16px 18px 18px;
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+        }
+
+        .panel--repl {
+            padding: 0;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .panel-header {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--line);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: linear-gradient(to right, #fdf2f8, #f9fafb);
+        }
+
+        .panel-title {
+            font-size: 0.9rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.09em;
+            color: var(--muted);
+        }
+
+        .badge {
+            font-size: 0.78rem;
+            padding: 3px 9px;
+            border-radius: 999px;
+            background: #fee2e2;
+            color: #b91c1c;
+            border: 1px solid #fecaca;
+        }
+
+        label {
+            font-weight: 650;
+            display: block;
+            margin: 0.35rem 0 0.15rem;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            font: inherit;
+            background: #fff;
+            outline: none;
+            transition: box-shadow 0.15s, border-color 0.15s, background 0.15s;
+            accent-color: var(--pink);
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            border-color: var(--pink-200);
+            box-shadow: 0 0 0 4px var(--ring);
+            background: #fdfcff;
+        }
+
+        input[type="file"] {
+            padding: 10px;
+            border: 1px dashed var(--pink-200);
+            background: var(--pink-100);
+            cursor: pointer;
+        }
+
+        textarea {
+            min-height: 90px;
+            resize: vertical;
+        }
+
+        .row {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+        }
+
+        @media (min-width: 720px) {
+            .row {
+                grid-template-columns: repeat(4, minmax(0, 1fr));
+            }
+        }
+
+        .row2 {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        @media (min-width: 720px) {
+            .row2 {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+        }
+
+        .toggle {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            padding-top: 4px;
+        }
+
+        .stack {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        button {
+            padding: 10px 16px;
+            border: 0;
+            border-radius: 999px;
+            background: var(--pink);
+            color: #fff;
+            font-weight: 800;
+            cursor: pointer;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: transform 0.05s, background 0.15s, box-shadow 0.15s;
+            box-shadow: 0 10px 24px rgba(236, 72, 153, 0.25);
+        }
+
+        button:hover {
+            background: var(--pink-600);
+        }
+
+        button:active {
+            transform: translateY(1px);
+            box-shadow: 0 6px 16px rgba(236, 72, 153, 0.2);
+        }
+
+        .button-secondary {
+            background: #0f172a;
+            box-shadow: 0 10px 24px rgba(15, 23, 42, 0.25);
+        }
+
+        .muted {
+            color: var(--muted);
+            font-size: 0.88rem;
+        }
+
+        .stats {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin: 0.6rem 0 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            border-radius: 999px;
+            background: #fff;
+            border: 1px solid var(--pink-200);
+            color: var(--pink-600);
+            font-weight: 700;
+            font-size: 0.8rem;
+        }
+
+        .pill-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 999px;
+            background: var(--pink-600);
+        }
+
+        .sw {
+            width: 18px;
+            height: 18px;
+            border-radius: 6px;
+            border: 1px solid #e5e7eb;
+            display: inline-block;
+            vertical-align: middle;
+            margin-left: 6px;
+        }
+
+        hr {
+            margin: 14px 0 12px;
+            border: none;
+            border-top: 1px solid var(--line);
+        }
+
+        .actions {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 12px;
+            align-items: start;
+            margin-top: 8px;
+        }
+
+        .thumb {
+            width: 160px;
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            background: #fff;
+            padding: 6px;
+        }
+
+        .thumb canvas {
+            width: 100%;
+            height: auto;
+            display: block;
+            background: #fafafa;
+            border-radius: 8px;
+        }
+
+        .label-small {
+            font-size: 0.82rem;
+            font-weight: 500;
+            color: var(--muted);
+            margin-top: 2px;
+        }
+
+        .section-label {
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--muted);
+            margin-bottom: 4px;
+        }
+
+        .step-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--muted);
+            margin-bottom: 4px;
+        }
+
+        .step-badge {
+            width: 18px;
+            height: 18px;
+            border-radius: 999px;
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: #b91c1c;
+        }
+
+        strudel-repl {
+            min-height: 360px;
+        }
+
+        @media (max-width: 600px) {
+            .actions {
+                grid-template-columns: 1fr;
+            }
+
+            .thumb {
+                justify-self: flex-start;
+            }
+        }
+
+        /* --- NEW LAYOUT IMPROVEMENTS --- */
+
+        /* Add subtle card hover for left panel */
+        .panel:not(.panel--repl) {
+            transition: box-shadow .25s ease, transform .15s ease;
+        }
+
+        .panel:not(.panel--repl):hover {
+            transform: translateY(-2px);
+            box-shadow: 0 14px 32px rgba(15, 23, 42, 0.12);
+        }
+
+        /* REPL panel gets a slightly darker border + subtle depth */
+        .panel--repl {
+            border-color: #d1d5db;
+            box-shadow: 0 8px 26px rgba(0, 0, 0, 0.04);
+        }
+
+        /* Step labels: add icons & spacing */
+        .step-label {
+            margin-bottom: 10px;
+            padding-left: 2px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Better spacing in stats row */
+        .stats div {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* Thumbnail styled as floating element for visual clarity */
+        .thumb {
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+        }
+
+        /* Buttons get slightly tighter spacing on mobile */
+        @media (max-width: 600px) {
+            .stack {
+                gap: 6px;
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+
+        /* Improve readability of affect text box */
+        #affectText {
+            line-height: 1.45;
+            border-radius: 14px;
+            padding: 14px 14px;
+            font-size: 0.92rem;
+        }
+
+        /* Make dropdowns slightly more rounded + lighter */
+        select {
+            background: #fff;
+            border-radius: 14px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrap">
+        <header>
+            <h1>From Pixels to Patterns</h1>
+            <p class="subtitle">
+                A co-creative tool that transforms images → affective text → Strudel music.
+            </p>
+        </header>
+
+
+        <section class="panel">
+            <!-- Left: controls -->
+            <section class="panel">
+                <div class="step-label">
+                    <span class="step-badge">1</span>
+                    Image analysis & controls
+                </div>
+
+                <div class="row" style="margin-bottom: 4px;">
+                    <div>
+                        <label for="root">Root</label>
+                        <select id="root">
+                            <option>C3</option>
+                            <option>D3</option>
+                            <option>E3</option>
+                            <option>F3</option>
+                            <option>G3</option>
+                            <option>A3</option>
+                            <option>B3</option>
+                            <option selected>G3</option>
+                        </select>
+                        <div class="label-small">Auto-set from hue (editable)</div>
+                    </div>
+                    <div>
+                        <label for="mode">Mode</label>
+                        <select id="mode">
+                            <option>major</option>
+                            <option>minor</option>
+                        </select>
+                        <div class="label-small">Can be nudged by valence</div>
+                    </div>
+                    <div>
+                        <label for="density">Density</label>
+                        <select id="density">
+                            <option value="low">Low</option>
+                            <option value="medium" selected>Medium</option>
+                            <option value="high">High</option>
+                        </select>
+                        <div class="label-small">Auto from arousal, then editable</div>
+                    </div>
+                    <div>
+                        <label for="instr">Instrument</label>
+                        <select id="instr">
+                            <option>gm_lead_6_voice</option>
+                            <option>piano</option>
+                            <option>kalimba</option>
+                        </select>
+                        <div class="label-small">From softness / sharpness, editable</div>
+                    </div>
+                </div>
+
+                <div class="row2">
+                    <div class="toggle">
+                        <input id="fxRev" type="checkbox" checked>
+                        <label for="fxRev">Jux Rev</label>
+                    </div>
+                    <div class="toggle">
+                        <input id="fxLpf" type="checkbox" checked>
+                        <label for="fxLpf">LPF (perlin)</label>
+                    </div>
+                </div>
+
+                <hr>
+
+                <div class="step-label" style="margin-bottom: 6px;">
+                    <span class="step-badge">2</span>
+                    Upload image & extract affect
+                </div>
+
+                <label for="img">Upload image</label>
+                <input id="img" type="file" accept="image/*">
+
+                <div class="stats">
+                    <div>Hue: <span id="hue">–</span><span id="hSw" class="sw"></span></div>
+                    <div>Sat: <span id="sat">–</span></div>
+                    <div>Val: <span id="val">–</span></div>
+                    <div>Contrast: <span id="con">–</span></div>
+                    <div class="pill">
+                        <span class="pill-dot"></span>
+                        Visual → affect text → music
+                    </div>
+                </div>
+
+                <div style="margin-top: 8px;">
+                    <div class="section-label">Affective description</div>
+                    <label for="affectText">Editable interpretation</label>
+                    <textarea id="affectText"
+                        placeholder="The image appears warm and bright, suggesting positive valence and medium arousal..."></textarea>
+                    <div class="label-small">
+                        Edit this text. Keywords like <b>positive</b>, <b>negative</b>, <b>calm</b>, <b>energetic</b>,
+                        <b>soft</b>, <b>sharp</b> influence the music.
+                    </div>
+                </div>
+
+                <div class="actions">
+                    <div class="stack">
+                        <button id="analyze">
+                            Analyze image → text
+                        </button>
+                        <button id="apply" class="button-secondary">
+                            Apply text → REPL
+                        </button>
+                        <span id="msg" class="muted">
+                            1) Analyze image, 2) Edit text / controls, 3) Apply and press Play in the REPL.
+                        </span>
+                    </div>
+                    <div class="thumb">
+                        <canvas id="cv" width="160" height="160" hidden></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Right: REPL -->
+            <section class="panel panel--repl">
+                <div class="panel-header">
+                    <div class="panel-title">Strudel REPL</div>
+                    <div style="font-size:0.8rem; color:#64748b; font-weight:600;">
+                        Auto-generated Strudel code
+                    </div>
+                </div>
+                <strudel-repl id="repl">
+                    <!--
+setcps(1)
+n("<0 1 2 3 4>*8").scale("G3 minor")
+.s("gm_lead_6_voice")
+.clip(sine.range(.2,.8).slow(8))
+.jux(rev)
+.room(2)
+.sometimes(add(note("12")))
+.lpf(perlin.range(200,20000).slow(4))
+                    -->
+                </strudel-repl>
+            </section>
+    </div>
+    </div>
+
+    <script>
+        // --- UI elements ---
+        const rootSel = document.getElementById('root');
+        const modeSel = document.getElementById('mode');
+        const densitySel = document.getElementById('density');
+        const instrSel = document.getElementById('instr');
+        const fxRev = document.getElementById('fxRev');
+        const fxLpf = document.getElementById('fxLpf');
+        const msg = document.getElementById('msg');
+        const affectTextArea = document.getElementById('affectText');
+
+        const file = document.getElementById('img');
+        const cv = document.getElementById('cv');
+        const ctx = cv.getContext('2d', { willReadFrequently: true });
+        const hueEl = document.getElementById('hue');
+        const satEl = document.getElementById('sat');
+        const valEl = document.getElementById('val');
+        const conEl = document.getElementById('con');
+        const sw = document.getElementById('hSw');
+
+        let currentFeatures = null;    // {hueDeg, sat, val, contrast}
+        let baseAffectLabels = null;   // labels from auto mapping
+
+        file.addEventListener('change', () => {
+            msg.textContent = 'Image loaded — click “Analyze image → text” to extract features.';
+        });
+
+        document.getElementById('analyze').addEventListener('click', analyzeImageAndDescribe);
+        document.getElementById('apply').addEventListener('click', applyTextToMusic);
+
+        // --- 1. Analyze image and get HSV + contrast ---
+        function analyzeImageAndDescribe() {
+            const f = file.files?.[0];
+            if (!f) {
+                msg.textContent = 'Choose an image first.';
+                return;
+            }
+            const reader = new FileReader();
+            reader.onerror = () => { msg.textContent = 'Could not read the image file.'; };
+            reader.onload = () => {
+                const img = new Image();
+                img.onload = () => {
+                    const W = 160, H = 160;
+                    cv.width = W; cv.height = H; cv.hidden = false;
+                    ctx.clearRect(0, 0, W, H);
+                    const r = Math.min(W / img.width, H / img.height);
+                    const w = Math.max(1, Math.floor(img.width * r));
+                    const h = Math.max(1, Math.floor(img.height * r));
+                    const x = Math.floor((W - w) / 2);
+                    const y = Math.floor((H - h) / 2);
+                    ctx.fillStyle = "#fafafa";
+                    ctx.fillRect(0, 0, W, H);
+                    ctx.drawImage(img, x, y, w, h);
+
+                    let data;
+                    try {
+                        data = ctx.getImageData(0, 0, W, H).data;
+                    } catch {
+                        msg.textContent = 'Pixel read blocked (use a local file).';
+                        return;
+                    }
+
+                    const { hAvg, sAvg, vAvg } = averageHSV(data);
+                    const contrast = estimateContrast(data);
+                    currentFeatures = { hueDeg: hAvg, sat: sAvg, val: vAvg, contrast };
+
+                    // Update visual stats
+                    hueEl.textContent = Math.round(hAvg);
+                    satEl.textContent = (sAvg * 100 | 0) + '%';
+                    valEl.textContent = (vAvg * 100 | 0) + '%';
+                    conEl.textContent = contrast.toFixed(2);
+                    sw.style.background = `hsl(${Math.round(hAvg)} 80% 50%)`;
+
+                    // Generate affective description
+                    const affect = generateAffectiveDescription({
+                        hue01: hAvg / 360,
+                        sat: sAvg,
+                        val: vAvg,
+                        contrast: contrast
+                    });
+
+                    baseAffectLabels = affect.labels;
+                    affectTextArea.value = affect.text;
+
+                    // pre-set root/mode/density/instrument from labels
+                    applyLabelsToControls(affect.labels, currentFeatures);
+
+                    msg.textContent = 'Affective description generated — you can now edit the text and controls.';
+                };
+                img.src = reader.result;
+            };
+            reader.readAsDataURL(f);
+        }
+
+        // --- 2. Visual → affect text ---
+        function classifyWarmCool(h01) {
+            if ((h01 >= 0 && h01 < 0.25) || (h01 > 0.75 && h01 <= 1)) return "warm";   // red–yellow
+            if (h01 >= 0.33 && h01 <= 0.7) return "cool";                              // green–blue
+            return "neutral";
+        }
+
+        function classifyBrightness(v) {
+            if (v < 0.33) return "dark";
+            if (v > 0.66) return "bright";
+            return "mid";
+        }
+
+        function classifySaturation(s) {
+            if (s < 0.25) return "low";
+            if (s > 0.7) return "high";
+            return "medium";
+        }
+
+        function classifyContrast(c) {
+            if (c < 0.25) return "low";
+            if (c > 0.6) return "high";
+            return "medium";
+        }
+
+        function estimateValence(warmCool, brightness, saturation) {
+            let score = 0;
+            if (warmCool === "warm") score += 1;
+            if (warmCool === "cool") score -= 1;
+            if (brightness === "bright") score += 1;
+            if (brightness === "dark") score -= 1;
+            if (saturation === "high") score += 0.5;
+            if (saturation === "low") score -= 0.5;
+
+            if (score > 0.75) return "positive";
+            if (score < -0.75) return "negative";
+            return "neutral";
+        }
+
+        function estimateArousal(brightness, saturation) {
+            let score = 0;
+            if (brightness === "bright") score += 1;
+            if (brightness === "dark") score -= 0.5;
+            if (saturation === "high") score += 1;
+            if (saturation === "low") score -= 0.5;
+
+            if (score > 0.8) return "high";
+            if (score < -0.1) return "low";
+            return "medium";
+        }
+
+        function estimateTexture(contrastClass) {
+            if (contrastClass === "low") return "soft";
+            if (contrastClass === "high") return "sharp";
+            return "neutral";
+        }
+
+        function generateAffectiveDescription(features) {
+            const h01 = features.hue01;
+            const s = features.sat;
+            const v = features.val;
+            const c = features.contrast;
+
+            const warmCool = classifyWarmCool(h01);
+            const brightness = classifyBrightness(v);
+            const saturation = classifySaturation(s);
+            const contrastLvl = classifyContrast(c);
+
+            const valence = estimateValence(warmCool, brightness, saturation);
+            const arousal = estimateArousal(brightness, saturation);
+            const texture = estimateTexture(contrastLvl);
+
+            const colorParts = [];
+
+            if (warmCool === "warm") colorParts.push("warm");
+            if (warmCool === "cool") colorParts.push("cool");
+            if (brightness === "bright") colorParts.push("bright");
+            else if (brightness === "dark") colorParts.push("dark");
+
+            if (saturation === "high") {
+                colorParts.push("strongly coloured");
+            } else if (saturation === "low" && brightness !== "bright") {
+                colorParts.push("muted");
+            }
+
+            let colourPhrase;
+            if (colorParts.length === 0) {
+                colourPhrase = "The image has balanced colours";
+            } else if (colorParts.length === 1) {
+                colourPhrase = `The image appears ${colorParts[0]}`;
+            } else if (colorParts.length === 2) {
+                colourPhrase = `The image appears ${colorParts[0]} and ${colorParts[1]}`;
+            } else {
+                const last = colorParts[colorParts.length - 1];
+                const first = colorParts.slice(0, -1).join(", ");
+                colourPhrase = `The image appears ${first}, and ${last}`;
+            }
+
+            let valencePhrase;
+            if (valence === "positive") valencePhrase = "positive valence";
+            else if (valence === "negative") valencePhrase = "negative valence";
+            else valencePhrase = "roughly neutral valence";
+
+            let arousalPhrase;
+            if (arousal === "high") {
+                arousalPhrase = "high arousal (energetic)";
+            } else if (arousal === "low") {
+                arousalPhrase = "low arousal (calm)";
+            } else {
+                arousalPhrase = "medium arousal";
+            }
+
+            let texturePhrase;
+            if (texture === "soft") {
+                texturePhrase = "a soft, gentle feel";
+            } else if (texture === "sharp") {
+                texturePhrase = "a sharp, tense feel";
+            } else {
+                if (contrastLvl === "medium") {
+                    texturePhrase = "a clear but not harsh feel";
+                } else {
+                    texturePhrase = "a neutral overall feel";
+                }
+            }
+
+            const text =
+                `${colourPhrase}, suggesting ${valencePhrase} ` +
+                `and ${arousalPhrase}. ` +
+                `The ${contrastLvl} contrast gives it ${texturePhrase}.`;
+
+            return {
+                text,
+                labels: {
+                    warmCool,
+                    brightness,
+                    saturation,
+                    contrast: contrastLvl,
+                    valence,
+                    arousal,
+                    texture
+                }
+            };
+        }
+
+        // --- 3. Text → labels (override) and labels → controls ---
+        function parseTextOverrides(text, base) {
+            const lower = text.toLowerCase();
+            const labels = { ...base };
+
+            // valence
+            if (lower.includes("positive") || lower.includes("happy") || lower.includes("warm")) {
+                labels.valence = "positive";
+            } else if (lower.includes("negative") || lower.includes("sad") || lower.includes("melancholic")) {
+                labels.valence = "negative";
+            }
+
+            // arousal
+            if (lower.includes("calm") || lower.includes("relaxed") || lower.includes("still")) {
+                labels.arousal = "low";
+            } else if (lower.includes("energetic") || lower.includes("intense") || lower.includes("excited") || lower.includes("busy")) {
+                labels.arousal = "high";
+            }
+
+            // texture
+            if (lower.includes("soft") || lower.includes("gentle") || lower.includes("airy")) {
+                labels.texture = "soft";
+            } else if (lower.includes("sharp") || lower.includes("edgy") || lower.includes("harsh") || lower.includes("tense") || lower.includes("bright")) {
+                labels.texture = "sharp";
+            }
+
+            return labels;
+        }
+
+        function hueToScale(hueDeg) {
+            const h = (hueDeg + 360) % 360;
+            if (h < 30) return { root: 'C3', mode: 'major' };
+            if (h < 90) return { root: 'D3', mode: 'major' };
+            if (h < 150) return { root: 'E3', mode: 'major' };
+            if (h < 210) return { root: 'G3', mode: 'minor' };
+            if (h < 270) return { root: 'A3', mode: 'minor' };
+            if (h < 330) return { root: 'F3', mode: 'minor' };
+            return { root: 'C3', mode: 'minor' };
+        }
+
+        function applyLabelsToControls(labels, features) {
+            if (!features) return;
+
+            const scaleChoice = hueToScale(features.hueDeg);
+            rootSel.value = scaleChoice.root;
+
+            if (labels.valence === "positive") modeSel.value = "major";
+            else if (labels.valence === "negative") modeSel.value = "minor";
+            else modeSel.value = scaleChoice.mode;
+
+            if (labels.arousal === "low") densitySel.value = "low";
+            else if (labels.arousal === "high") densitySel.value = "high";
+            else densitySel.value = "medium";
+
+            if (labels.texture === "soft") instrSel.value = "piano";
+            else if (labels.texture === "sharp") instrSel.value = "gm_lead_6_voice";
+            else instrSel.value = "kalimba";
+        }
+
+        // --- 4. Build Markov melody and Strudel code from labels ---
+        function generateMarkovSequence(length, isAscendingBias) {
+            const transitions = {
+                0: { 0: 0.4, 2: 0.3, 4: 0.2, 7: 0.1 },
+                2: { 0: 0.2, 2: 0.4, 4: 0.3, 7: 0.1 },
+                4: { 0: 0.2, 2: 0.3, 4: 0.3, 7: 0.2 },
+                7: { 2: 0.3, 4: 0.3, 7: 0.4 }
+            };
+
+            function sampleNext(state) {
+                const base = transitions[state] || transitions[0];
+                const probs = { ...base };
+
+                if (isAscendingBias) {
+                    Object.keys(probs).forEach(k => {
+                        const deg = Number(k);
+                        if (deg > state) probs[k] *= 1.2;
+                    });
+                    let sum = 0;
+                    Object.values(probs).forEach(p => sum += p);
+                    Object.keys(probs).forEach(k => { probs[k] /= sum || 1; });
+                }
+
+                const r = Math.random();
+                let acc = 0;
+                for (const k in probs) {
+                    acc += probs[k];
+                    if (r <= acc) return Number(k);
+                }
+                const ks = Object.keys(probs);
+                return Number(ks[ks.length - 1]);
+            }
+
+            const start = 0;
+            const seq = [];
+            let current = start;
+            for (let i = 0; i < length; i++) {
+                seq.push(current);
+                current = sampleNext(current);
+            }
+            return seq;
+        }
+
+        function buildNoteSeq(labels) {
+            // Density is auto-set from arousal on Analyze,
+            // but the user can override it before Apply.
+            let density = densitySel.value;
+
+            if (!density) {
+                if (labels.arousal === "low") density = "low";
+                else if (labels.arousal === "high") density = "high";
+                else density = "medium";
+            }
+
+            let length;
+            if (density === "low") {
+                length = 8;
+            } else if (density === "high") {
+                length = 32;
+            } else {
+                length = 16;
+            }
+
+            const ascendingBias = affectTextArea.value.toLowerCase().includes("upward");
+            const seq = generateMarkovSequence(length, ascendingBias);
+            return `<${seq.join(" ")}>*1`;
+        }
+
+        function buildStrudelPattern(labels) {
+            const root = rootSel.value;
+            const mode = modeSel.value;
+
+            const markovPattern = buildNoteSeq(labels);
+
+            let speedFactor;
+            if (labels.arousal === "low") {
+                speedFactor = 1.0;
+            } else if (labels.arousal === "high") {
+                speedFactor = 5.0;
+            } else {
+                speedFactor = 3.0;
+            }
+
+            const instrument = instrSel.value;
+
+            let tempoPart = "";
+            if (Math.abs(speedFactor - 1.0) < 0.05) {
+                tempoPart = "";
+            } else if (speedFactor > 1.0) {
+                tempoPart = `.fast(${speedFactor.toFixed(2)})`;
+            } else {
+                tempoPart = `.slow(${(1 / speedFactor).toFixed(2)})`;
+            }
+
+            let pattern = `n("${markovPattern}").scale("${root} ${mode}")${tempoPart}
+.s("${instrument}")
+.clip(sine.range(.2,.8).slow(8))`;
+
+            if (fxRev.checked) {
+                pattern += `\n.jux(rev)`;
+            }
+            pattern += `\n.room(2)
+.sometimes(add(note("12")))`;
+
+            if (fxLpf.checked) {
+                pattern += `\n.lpf(perlin.range(200,20000).slow(4))`;
+            }
+
+            return pattern;
+        }
+
+        function queuedReplace(code) {
+            const old = document.getElementById('repl');
+            const fresh = document.createElement('strudel-repl');
+            fresh.id = 'repl';
+            fresh.innerHTML = `<!--
+${code}
+-->`;
+            old.replaceWith(fresh);
+            requestAnimationFrame(() => { });
+        }
+
+        function applyTextToMusic() {
+            if (!currentFeatures || !baseAffectLabels) {
+                msg.textContent = 'Analyze an image first to generate affect text.';
+                return;
+            }
+
+            const userText = affectTextArea.value || baseAffectLabels.text;
+            const finalLabels = parseTextOverrides(userText, baseAffectLabels);
+
+            const strudelCode = buildStrudelPattern(finalLabels);
+            queuedReplace(strudelCode);
+
+            msg.textContent = 'Applied text mapping — when the REPL finishes loading, press Play.';
+        }
+
+        // --- helpers for HSV + contrast ---
+        function averageHSV(buf) {
+            let i = 0, n = 0, h = 0, s = 0, v = 0;
+            const step = 16;
+            for (i = 0; i < buf.length; i += step) {
+                const r = buf[i] / 255;
+                const g = buf[i + 1] / 255;
+                const b = buf[i + 2] / 255;
+                const mx = Math.max(r, g, b);
+                const mn = Math.min(r, g, b);
+                const d = mx - mn;
+                let hh = 0;
+                if (d === 0) hh = 0;
+                else if (mx === r) hh = ((g - b) / d) % 6;
+                else if (mx === g) hh = (b - r) / d + 2;
+                else hh = (r - g) / d + 4;
+                hh = ((hh * 60) % 360 + 360) % 360;
+                const ss = mx === 0 ? 0 : d / mx;
+                const vv = mx;
+                h += hh; s += ss; v += vv; n++;
+            }
+            return { hAvg: h / n, sAvg: s / n, vAvg: v / n };
+        }
+
+        function estimateContrast(buf) {
+            let i = 0, n = 0, sum = 0, sum2 = 0;
+            const step = 16;
+            for (i = 0; i < buf.length; i += step) {
+                const r = buf[i];
+                const g = buf[i + 1];
+                const b = buf[i + 2];
+                const y = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+                sum += y;
+                sum2 += y * y;
+                n++;
+            }
+            const mean = sum / n;
+            const variance = (sum2 / n) - mean * mean;
+            const std = Math.sqrt(Math.max(0, variance));
+            return std / 255;
+        }
+    </script>
+</body>
+
+</html>
